@@ -8,9 +8,9 @@
   - You may find five minute matches
 - Evaluations are also removed from algebraic notation
 - Examples:
-  - Jan 2016 4.5 GB > 150 MB (Contains 1.2M Games -- 30x reduction)
-  - Nov 2015 3.5 GB > 100 MB (Contains 840K Games -- 35x reduction)
-  - Jun 2013 170 MB > 10 MB (Contains 76K Games - 17x reduction)
+  - Jan 2016 4.5 GB >> 150 MB --- 30x reduction --- (Contains 1.2M Games)
+  - Nov 2015 3.5 GB >> 100 MB --- 35x reduction --- (Contains 840K Games)
+  - Jun 2013 170 MB >> 10 MB --- 17x reduction --- (Contains 76K Games)
 
 ---
 ### Format
