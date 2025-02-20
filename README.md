@@ -8,14 +8,15 @@
   - You may find five minute matches
 - Evaluations are also removed from algebraic notation
 - Examples:
-  - Jan 2016 4.5 GB > 500 MB (Contains 1.2M Games)
-  - Nov 2015 3.5 GB > 350 MB (Contains 840K Games)
-  - Jun 2013 170 MB > 31 MB (Contains 76K Games)
+  - Jan 2016 4.5 GB > 150 MB (Contains 1.2M Games -- 30x reduction)
+  - Nov 2015 3.5 GB > 100 MB (Contains 840K Games -- 35x reduction)
+  - Jun 2013 170 MB > 10 MB (Contains 76K Games - 17x reduction)
 
 ---
 ### Format
+In bytes, each element of a match and their storage requirements
 ```
-White ELO - Black ELO - Time Control [ Seconds + Increment Seconds ] - Moves [ Algebraic Notation ]
+White ELO [2B] - Black ELO [2B] - Time Control Minutes Total [1B] - Time Control Increment Seconds [1B] - Moves [1.5B to 4B / Move]
 ```
 Sample:
 ```
