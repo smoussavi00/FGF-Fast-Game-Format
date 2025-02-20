@@ -14,13 +14,16 @@
 
 ---
 ### Format
-In bytes, each element of a match and their storage requirements
+
 ```
-White ELO [2B]
-Black ELO [2B]
-Time Control Minutes Total [1B]
-Time Control Increment Seconds [1B]
-Moves [1.5B to 4B / Move]
+
+  (B - bytes, b - bits)
+
+  White ELO [2B]
+  Black ELO [2B]
+  Time Control Minutes Total [1B]
+  Time Control Increment Seconds [1B]
+  Moves [1.5B to 4B / Move]
 
   - Standard Moves are represented with 12 bits
 
