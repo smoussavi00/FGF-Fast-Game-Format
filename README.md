@@ -39,14 +39,11 @@ Moves [1.5B to 4B / Move]
     > File disambiguations are of the form ?1, where the rank is constant at 1 (rank not relevant)
     > Rank disambiguations are of the form a?, where the file is constant at a (file not relevant)
   > [2b Result] 0/00: no result (game still continues), 1/01: black win, 2/10: draw, 3/11: white win
+  > [2b NIL] Last two bits are unused, maybe will be filled for a feature later on...
 
   - If the white move is extended and the black move is not, or vice versa, 5B needed to store the pair of moves
   - If both moves are extended (eg. white's move must be disambiguated, and black's move is a checkmate), 7B needed to store the pair of moves
   - If neither moves are extended (eg. 1. e4 e5), 3B needed to store the pair of moves
   - Special case where the match terminates after white's move, black does not make a move, the 28 bits (as the final move warrants an extension -- 12 + 16) are padded to 32 to make 4B
 
-```
-Sample:
-```
-1406 - 1434 - 1200+0 - 1. e4 e5 2. Nf3 f6 3. d4 a5 4. dxe5 fxe5 5. Bc4 Nc6 6. Nc3 a4 7. Ng5 Na5 8. Qh5+ g6 9. Bf7+ Ke7 10. Nd5+ Kd6 11. b3 gxh5 12. Ba3+ Kc6 13. Nb4+ Kc5 14. O-O-O Kb5 15. Rd5+ Kb6 16. c4 Qxg5+ 17. Kb1 Qxg2 18. Rb5+ Ka7 19. Rb6 cxb6 20. Rc1 Qxe4+ 21. Ka1 Qd4+ 0-1
 ```
