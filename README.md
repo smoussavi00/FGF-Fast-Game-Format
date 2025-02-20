@@ -24,7 +24,7 @@ Moves [1.5B to 4B / Move]
 
   - Standard Moves are represented with 12 bits
   > [1b Extend Flag] Set if the move is the final move played in the game or includes a checkmate, disambiguation (eg. R"d"e1), pawn promotion.
-    > If this bit is set, another 2B are           given to encode the move
+    > If this bit is set, another 2B are given to encode the move
   > [1b Capture Flag] Set if the move includes a capture 'x'
   > [1b Check Flag] Set if the move includes a check '+'
   > [3b Piece Encoding] 0/000: Queenside Castle, 1/001: kingside castle, 2/010: pawn, 3/011: knight, 4/100: bishop, 5/101: rook, 6/110: queen, 7/111: king
