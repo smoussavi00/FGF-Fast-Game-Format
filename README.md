@@ -23,6 +23,7 @@ Time Control Increment Seconds [1B]
 Moves [1.5B to 4B / Move]
 
   - Standard Moves are represented with 12 bits
+
   > [1b Extend Flag] Set if the move is the final move played in the game or includes a checkmate, disambiguation (eg. R"d"e1), pawn promotion.
     > If this bit is set, another 2B are given to encode the move
   > [1b Capture Flag] Set if the move includes a capture 'x'
@@ -31,7 +32,9 @@ Moves [1.5B to 4B / Move]
   > [6b Square Encoding] 0-7: a1-a8, 8-15: b1-b8 ... 56-63: h1-h8
 
   - Extensions are represented with 16 bits or 2B
-  - Extensions are appended to the standard 12 bits 
+  - Extensions are appended to the standard 12 bits
+  - Extensions are generally rare
+
   > [1b Checkmate Flag] Set if the move includes a checkmate '#'
   > [2b Disambiguation Case] 0/00: no disambiguation, 1/01: disambiguate by file (eg. R"d"e1), 2/10: disambiguate by rank (eg. R"1"g4), 3/11: disambiguate both (eg. Q"h4"e1) 
   > [3b Promotion Case]: 0/000: no promotion, 1/001: promotion to knight, 2/010: promotion to bishop, 3/011: promotion to rook, 4/100: promotion to queen
