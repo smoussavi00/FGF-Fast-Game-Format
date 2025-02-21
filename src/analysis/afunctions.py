@@ -64,7 +64,6 @@ def extract(fp,start):
             w = bfbyte >> 28
             b = bfbyte & (2**28-1)
 
-
             ns = 5
             if bfbyte & 12: ns = 0
 
@@ -92,26 +91,44 @@ def checkc(m):
 # CHECK CHECK -- TRUE IF CHECK -- FALSE OTHERWISE
     return m & 2**9 * ((2**16) ** extensionc(m))
 
-def squaregt(m):
-# SQUARE GET -- RETURN DESTINATION SQUARE IN MOVE
-    sq = (m & (2**6-1) * ((2**16) ** extensionc(m))) >> 16 * extensionc(m)
-    return chr(sq//8+97) + str(sq%8+1)
+def checkmatec(m):
+# CHECKMATE CHECK -- TRUE IF CHECKMATE -- FALSE OTHERWISE
+    return extensionc(m) * (m & 2**15)
 
 def piecegt(m):
 # PIECE GET -- RETURN PIECE IN MOVE
 # CHECK PIECE BITS FOR MOVE (2**8 + 2**7 + 2**6 = 448)
     return ['O-O-O','O-O','','N','B','R','Q','K'][(m & 448 * ((2**16) ** extensionc(m))) >> 6 + 16 * extensionc(m)]
 
+def squaregt(m):
+# SQUARE GET -- RETURN DESTINATION SQUARE IN MOVE
+    sq = (m & (2**6-1) * ((2**16) ** extensionc(m))) >> 16 * extensionc(m)
+    return chr(sq//8+97) + str(sq%8+1)
+
+def disambiguationgt(m):
+# DISAMBIGUATION GET -- RETURN DISAMBIGUATION
+# CHECK DISAMBIGUATION CASE BITS (2**13 + 2**14 = 24576)
+# RETURN DISAMBIGUATION BASED ON DISAMBIGUATION CASE
+    dca = (m & 24576) >> 13
+    if not dca or not extensionc(m): return ''
+    elif dca == 1: return squaregt((m >> 4) & (2**6-1))[0]
+    elif dca == 2: return squaregt((m >> 4) & (2**6-1))[1]
+    return squaregt((m >> 4) & (2**6-1))
+
+def promotiongt(m):
+# PROMOTION GET -- RETURN PROMOTION
+# CHECK PROMOTION BITS (2**10 + 2**11 + 2**12 = 7168)
+    pro = (m & 7168) >> 10
+    if not pro or not extensionc(m): return ''
+    return ['=N','=B','=R','=Q'][pro-1]
+
+def resultgt(m):
+# RESULT GET -- RETURN RESULT
+# CHECK RESULT BITS (2**2 + 2**3 = 12)
+    res = (m & 12) >> 2
+    if not res or not extensionc(m): return ''
+    return ['0-1','1/2-1/2','1-0'][res-1]
+
 def piecevaluegt(pc,kingvalue=9):
 # PIECE VALUE GET -- RETURN PIECE VALUE IN PIECE
     return {'':1,'N':3,'B':3,'R':5,'Q':9,'K':kingvalue}[pc]
-
-'''
-0,1 ->  (0/1) * 0 + (1/1) * pvgt(m), 1 + 1
-4,3 ->  (2/3) * 4 + (1/3) * pvgt(m), 3 + 1
-
-if piecegt(m) == 'O-O-O': -- UPDATE THE KING NEW SQUARE AND UPDATE THE ROOK NEW SQUARE
-elif piecegt(m) == 'O-O': -- '' --
-else: d[squaregt(m)] = (((d[squaregt(m)][1]-1)/d[squaregt(m)][1]) * d[squaregt(m)][0] + (1/d[squaregt(m)][1]) * piecevaluegt(m) , d[squaregt(m)][1]+1)
-
-'''
