@@ -31,7 +31,7 @@ def transit(file):
 
             while True:
 
-                w,b,ns = afunctions.extract(f,fpos)
+                w,b,ns,t = afunctions.extract(f,fpos)
 
                 wp = afunctions.piecegt(w)
                 wsq = afunctions.squaregt(w)
@@ -45,7 +45,7 @@ def transit(file):
                 else:
                     d[wsq] = ( ((d[wsq][1]-1)/d[wsq][1]) * d[wsq][0] + (1/d[wsq][1]) * afunctions.piecevaluegt(wp) , d[wsq][1]+1 )
 
-                if ns > -1:
+                if t < 2:
 
                     bp = afunctions.piecegt(b)
                     bsq = afunctions.squaregt(b)
@@ -59,16 +59,16 @@ def transit(file):
                     else:
                         d[bsq] = ( ((d[bsq][1]-1)/d[bsq][1]) * d[bsq][0] + (1/d[bsq][1]) * afunctions.piecevaluegt(bp) , d[bsq][1]+1 )
 
-                fpos += max(ns,0)
+                fpos += ns
             
-                if ns < 1:
+                if t:
                     fpos += skip
                     break
 
-        for sq in d:
-            d[sq] = round(d[sq][0],2)
+    for sq in d:
+        d[sq] = round(d[sq][0],2)
 
-        pprint.pprint(d)
+    return d
 
 def victim(file):
 # PIECE VICTIM HEATMAP GENERATE
@@ -84,58 +84,110 @@ def victim(file):
         while True:
 
             f.seek(fpos)
+            print(fpos)
             if not f.read(1): break
             enpassantsq = ''
 
             while True:
 
-                w,b,ns = afunctions.extract(f,fpos)
+                w,b,ns,t = afunctions.extract(f,fpos)
 
                 wp = afunctions.piecegt(w)
                 wsq = afunctions.squaregt(w)
+                #print(f'wsq: {wsq}')
 
                 if afunctions.capturec(w):
-                    if not wp and wsq == enpassantsq[0]+str(int(enpassantsq[1])+1): 
+                    if not wp and enpassantsq and wsq == enpassantsq[0]+str(int(enpassantsq[1])+1): 
                         d[enpassantsq] = ( ((d[enpassantsq][1]-1)/d[enpassantsq][1]) * d[enpassantsq][0] + (1/d[enpassantsq][1]) , d[enpassantsq][1]+1 )
                     else: d[wsq] = ( ((d[wsq][1]-1)/d[wsq][1]) * d[wsq][0] + (1/d[wsq][1]) * afunctions.piecevaluegt(d2[wsq]) , d[wsq][1]+1 )
                 
                 if wp == 'O-O-O':
                     d2['d1'] = 'R'
                     d2['c1'] = 'K'
+
                 elif wp == 'O-O':
                     d2['f1'] = 'R'
                     d2['g1'] = 'K'
+
                 else:
                     d2[wsq] = wp
 
                 if not wp and not afunctions.capturec(w): enpassantsq = wsq
                 else: enpassantsq = ''
 
-                if ns > -1:
+                if t < 2:
 
                     bp = afunctions.piecegt(b)
                     bsq = afunctions.squaregt(b)
+                    #print(f'bsq: {bsq}')
 
                     if afunctions.capturec(b):
-                        if not bp and bsq == enpassantsq[0]+str(int(enpassantsq[1])-1): 
+                        if not bp and enpassantsq and bsq == enpassantsq[0]+str(int(enpassantsq[1])-1): 
                             d[enpassantsq] = ( ((d[enpassantsq][1]-1)/d[enpassantsq][1]) * d[enpassantsq][0] + (1/d[enpassantsq][1]) , d[enpassantsq][1]+1 )
                         else: d[bsq] = ( ((d[bsq][1]-1)/d[bsq][1]) * d[bsq][0] + (1/d[bsq][1]) * afunctions.piecevaluegt(d2[bsq]) , d[bsq][1]+1 )
-                    
+                        
                     if bp == 'O-O-O':
                         d2['d8'] = 'R'
                         d2['c8'] = 'K'
+
                     elif bp == 'O-O':
                         d2['f8'] = 'R'
                         d2['g8'] = 'K'
                     else:
                         d2[bsq] = bp
 
-                    if not bp and not afunctions.capturec(bp): enpassantsq = bsq
+                    if not bp and not afunctions.capturec(b): enpassantsq = bsq
                     else: enpassantsq = ''
+
+                fpos += ns
+            
+                if t:
+                    fpos += skip
+                    break
+
+    for sq in d:
+        d[sq] = round(d[sq][0],2)
+
+    return d
+
+def checkandmates(file,mode):
+    
+    d = {f'{f}{r}': 0 for f in [chr(i) for i in range(97,105)] for r in range(1, 9)}
+    skip = 6
+
+    with open(file, "rb") as f:
+
+        fpos = skip
+
+        while True:
+
+            f.seek(fpos)
+            if not f.read(1): break
+
+            while True:
+
+                w,b,ns = afunctions.extract(f,fpos)
+
+                wsq = afunctions.squaregt(w)
+                if mode == '+': c = afunctions.checkc(w)
+                else: c = afunctions.checkmatec(w)
+
+                if c: d[wsq] += 1
+
+                if ns > -1:
+
+                    bsq = afunctions.squaregt(b)
+                    if mode == '+': c = afunctions.checkc(b)
+                    else: c = afunctions.checkmatec(b)
+
+                    if c: d[bsq] += 1
 
                 fpos += max(ns,0)
             
                 if ns < 1:
                     fpos += skip
                     break
-        
+    
+    return d
+
+victim('../fast-datasets/lichess-fast-2016-01')

@@ -11,6 +11,7 @@ def extract(fp,start):
     b = -1
     w = -1
     ns = -1
+    t = 0
 
     fp.seek(start)
     bfbyte = int.from_bytes(fp.read(1), byteorder='big')
@@ -31,17 +32,19 @@ def extract(fp,start):
             b = bfbyte & (2**28-1)
 
             ns = 7
-            if bfbyte & 12: ns = 0
+            if bfbyte & 12: t = 1
         else:
         # ONLY WHITE MOVE EXTENDED -- NO TERMINATION 5 BYTES NEEDED -- YES TERMINATION 4 BYTES NEEDED
         # CHECK RESULT BITS FOR WHITE MOVE (2**4 * (2**3 + 2**4) = 192) -- IF CONDITION IS TRUE TERMINATE AT WHITE MOVE
             
             if bfbyte & 192: 
+                print('we expect this')
                 fp.seek(start)
                 bfbyte = int.from_bytes(fp.read(4), byteorder='big')
                 w = bfbyte >> 4
 
-                ns = -1
+                ns = 4
+                t = 2
 
             else:
                 fp.seek(start)
@@ -58,14 +61,14 @@ def extract(fp,start):
         if bfbyte & 8:
         # ONLY BLACK MOVE EXTENDED -- 5 BYTES NEEDED
         # CHECK RESULT BITS FOR BLACK MOVE (2**3 + 2**4 = 12) -- IF CONDITION IS TRUE TERMINATE AT BLACK MOVE
-
+            print('expect this later')
             fp.seek(start)
             bfbyte = int.from_bytes(fp.read(5), byteorder='big')
             w = bfbyte >> 28
             b = bfbyte & (2**28-1)
 
             ns = 5
-            if bfbyte & 12: ns = 0
+            if bfbyte & 12: t = 1
 
         else:
         # NEITHER MOVE IS EXTENDED -- 3 BYTES NEEDED
@@ -77,7 +80,7 @@ def extract(fp,start):
 
             ns = 3
 
-    return w,b,ns
+    return w,b,ns,t
     
 def extensionc(m):
 # EXTENSION CHECK -- TRUE IF EXTENDED -- FALSE OTHERWISE
