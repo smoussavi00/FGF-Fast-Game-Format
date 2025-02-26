@@ -35,7 +35,7 @@ def procm(m,rs=None,only=False):
             ext = True
             n *= 2**16
             n += 2**27
-        n += (['K','B','R','Q'].index(m[-1]) + 1) * 2**10
+        n += (['N','B','R','Q'].index(m[-1]) + 1) * 2**10
         m = m[:-2]
     
     # FIRST DETERMINE RANK
@@ -62,6 +62,7 @@ def procm(m,rs=None,only=False):
     # PAWN
         n += 2**7 * ((2**16) ** ext)
     
+    if only: n *= 2**4
     if not m: return n
     
     # DISAMBIGUATION (set extend flag)
@@ -81,10 +82,7 @@ def procm(m,rs=None,only=False):
     # FILE DISAMBIGUATION
         n += (8 * (ord(m) - 97)) * (2**4)
         n += 2**13
-
-    if only:
-        n *= 2**4
-
+        
     return n
     
 def clean_moves(fpo,moves):
@@ -125,22 +123,22 @@ def main():
     
     fs = False
     buf = {}
-
+    i = 0
     with open(file) as fp:
         with open("gen", "wb") as fpo:
             for line in fp:
                 
                 if not line.strip() and fs:
-                    if buf['Termination'] in ['Normal','Time forfeit'] and 'Classical' in buf['Event'].split():
-
+                    if buf['Termination'] in ['Normal','Time forfeit'] and 'Classical' in buf['Event'].split() and (buf["WhiteElo"].isnumeric() and buf["BlackElo"].isnumeric()):
+                        
                         fpo.write(int(buf["WhiteElo"]).to_bytes(2,'big'))
                         fpo.write(int(buf["BlackElo"]).to_bytes(2,'big'))
                         fpo.write((int(buf["TimeControl"].split('+')[0])//60).to_bytes(1,'big'))
                         fpo.write(int(buf["TimeControl"].split('+')[1]).to_bytes(1,'big'))
                         clean_moves(fpo,buf['the-moves'])
-                        print(buf['the-moves'])
-                        break
-
+                        
+                        i += 1
+                        if i % 50000 == 0: print(i) 
                     fs = False
                     buf = {}
                 elif not line.strip() and not fs:
@@ -151,8 +149,6 @@ def main():
                         buf[s[0]] = s[1][1:-1]
                     else: buf['the-moves'] = line.strip()
                             
-
-
 if __name__ == "__main__":
     main()
 
@@ -174,6 +170,7 @@ EXTEND IN CASES OF:
     - Disambiguation
     - Promotion
     - Checkmate
+    - Last Move
 
 16 BITS > 2By
 
