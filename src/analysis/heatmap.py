@@ -1,5 +1,4 @@
 import afunctions  # type: ignore
-import pprint
 
 def dinit():
     d = {f'{f}{r}': '-' for f in [chr(i) for i in range(97,105)] for r in range(1, 9)}
@@ -84,7 +83,6 @@ def victim(file):
         while True:
 
             f.seek(fpos)
-            print(fpos)
             if not f.read(1): break
             enpassantsq = ''
 
@@ -94,7 +92,6 @@ def victim(file):
 
                 wp = afunctions.piecegt(w)
                 wsq = afunctions.squaregt(w)
-                #print(f'wsq: {wsq}')
 
                 if afunctions.capturec(w):
                     if not wp and enpassantsq and wsq == enpassantsq[0]+str(int(enpassantsq[1])+1): 
@@ -119,7 +116,6 @@ def victim(file):
 
                     bp = afunctions.piecegt(b)
                     bsq = afunctions.squaregt(b)
-                    #print(f'bsq: {bsq}')
 
                     if afunctions.capturec(b):
                         if not bp and enpassantsq and bsq == enpassantsq[0]+str(int(enpassantsq[1])-1): 
@@ -133,6 +129,7 @@ def victim(file):
                     elif bp == 'O-O':
                         d2['f8'] = 'R'
                         d2['g8'] = 'K'
+
                     else:
                         d2[bsq] = bp
 
@@ -151,6 +148,7 @@ def victim(file):
     return d
 
 def checkandmates(file,mode):
+# CHECKMATE / MATE LOCATIONS HEATMAP GENERATE
     
     d = {f'{f}{r}': 0 for f in [chr(i) for i in range(97,105)] for r in range(1, 9)}
     skip = 6
@@ -166,28 +164,26 @@ def checkandmates(file,mode):
 
             while True:
 
-                w,b,ns = afunctions.extract(f,fpos)
+                w,b,ns,t = afunctions.extract(f,fpos)
 
                 wsq = afunctions.squaregt(w)
-                if mode == '+': c = afunctions.checkc(w)
-                else: c = afunctions.checkmatec(w)
+                if mode == '+': c = int(bool(afunctions.checkc(w)))
+                else: c = int(bool(afunctions.checkmatec(w)))
 
                 if c: d[wsq] += 1
 
-                if ns > -1:
+                if t < 2:
 
                     bsq = afunctions.squaregt(b)
-                    if mode == '+': c = afunctions.checkc(b)
-                    else: c = afunctions.checkmatec(b)
+                    if mode == '+': c = int(bool(afunctions.checkc(b)))
+                    else: c = int(bool(afunctions.checkmatec(b)))
 
                     if c: d[bsq] += 1
 
-                fpos += max(ns,0)
+                fpos += ns
             
-                if ns < 1:
+                if t:
                     fpos += skip
                     break
     
     return d
-
-victim('../fast-datasets/lichess-fast-2016-01')
