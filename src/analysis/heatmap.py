@@ -1,17 +1,6 @@
 import afunctions  # type: ignore
 
-def dinit():
-    d = {f'{f}{r}': '-' for f in [chr(i) for i in range(97,105)] for r in range(1, 9)}
 
-    for sq in d:
-        if sq in [f'{f}{r}' for f in [chr(i) for i in range(97,105)] for r in [2,7]]: d[sq] = ''
-        elif sq in ['b1','b8','g1','g8']: d[sq] = 'N'
-        elif sq in ['c1','c8','f1','f8']: d[sq] = 'B'
-        elif sq in ['a1','a8','h1','h8']: d[sq] = 'R'
-        elif sq in ['d1','d8']: d[sq] = 'Q'
-        elif sq in ['e1','e8']: d[sq] = 'K'
-
-    return d
 
 def transit(file):
 # PIECE TRANSIT HEATMAP GENERATE
@@ -41,6 +30,8 @@ def transit(file):
                 elif wp == 'O-O':
                     d['f1'] = ( ((d['f1'][1]-1)/d['f1'][1]) * d['f1'][0] + (1/d['f1'][1]) * afunctions.piecevaluegt('R') , d['f1'][1]+1 )
                     d['g1'] = ( ((d['g1'][1]-1)/d['g1'][1]) * d['g1'][0] + (1/d['g1'][1]) * afunctions.piecevaluegt('K',9) , d['g1'][1]+1 )
+                elif afunctions.promotiongt(w):
+                    d[wsq] = ( ((d[wsq][1]-1)/d[wsq][1]) * d[wsq][0] + (1/d[wsq][1]) *  afunctions.piecevaluegt(afunctions.promotiongt(w)[0]) , d[wsq][1]+1 )
                 else:
                     d[wsq] = ( ((d[wsq][1]-1)/d[wsq][1]) * d[wsq][0] + (1/d[wsq][1]) * afunctions.piecevaluegt(wp) , d[wsq][1]+1 )
 
@@ -73,7 +64,7 @@ def victim(file):
 # PIECE VICTIM HEATMAP GENERATE
 
     d = {f'{f}{r}': (0, 1) for f in [chr(i) for i in range(97,105)] for r in range(1, 9)}
-    d2 = dinit()
+    d2 = afunctions.dinit()
     skip = 6
             
     with open(file, "rb") as f:
@@ -129,6 +120,9 @@ def victim(file):
                     elif bp == 'O-O':
                         d2['f8'] = 'R'
                         d2['g8'] = 'K'
+
+                    elif afunctions.promotiongt(w):
+                        d2[wsq] = afunctions.promotiongt(w)[1]
 
                     else:
                         d2[bsq] = bp
