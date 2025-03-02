@@ -1,3 +1,6 @@
+import clean.py #type: ignore
+# import ../clean.py
+
 def extract(fp,start):
 # GETS MOVE(S) FROM FAST-DATASET FILE
 # RETURNS WHITE MOVE, RETURNS BLACK MOVE (IF THERE IS ONE), AND RETURNS SEEK INCREMENT 
@@ -38,7 +41,6 @@ def extract(fp,start):
         # CHECK RESULT BITS FOR WHITE MOVE (2**4 * (2**3 + 2**4) = 192) -- IF CONDITION IS TRUE TERMINATE AT WHITE MOVE
             
             if bfbyte & 192: 
-                print('we expect this')
                 fp.seek(start)
                 bfbyte = int.from_bytes(fp.read(4), byteorder='big')
                 w = bfbyte >> 4
@@ -61,7 +63,6 @@ def extract(fp,start):
         if bfbyte & 8:
         # ONLY BLACK MOVE EXTENDED -- 5 BYTES NEEDED
         # CHECK RESULT BITS FOR BLACK MOVE (2**3 + 2**4 = 12) -- IF CONDITION IS TRUE TERMINATE AT BLACK MOVE
-            print('expect this later')
             fp.seek(start)
             bfbyte = int.from_bytes(fp.read(5), byteorder='big')
             w = bfbyte >> 28
@@ -135,3 +136,25 @@ def resultgt(m):
 def piecevaluegt(pc,kingvalue=9):
 # PIECE VALUE GET -- RETURN PIECE VALUE IN PIECE
     return {'':1,'N':3,'B':3,'R':5,'Q':9,'K':kingvalue}[pc]
+
+def dinit():
+    d = {f'{f}{r}': '-' for f in [chr(i) for i in range(97,105)] for r in range(1, 9)}
+
+    for sq in d:
+        if sq in [f'{f}{r}' for f in [chr(i) for i in range(97,105)] for r in [2,7]]: d[sq] = ''
+        elif sq in ['b1','b8','g1','g8']: d[sq] = 'N'
+        elif sq in ['c1','c8','f1','f8']: d[sq] = 'B'
+        elif sq in ['a1','a8','h1','h8']: d[sq] = 'R'
+        elif sq in ['d1','d8']: d[sq] = 'Q'
+        elif sq in ['e1','e8']: d[sq] = 'K'
+
+    return d
+
+def procop(op):
+    # PROCESS OPENING
+
+    opr = []
+    for m in op:
+        opr.append(clean.procm(m))
+    
+    return opr
