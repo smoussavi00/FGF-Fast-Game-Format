@@ -54,3 +54,13 @@
   - Special case where the match terminates after white's move, black does not make a move, the 28 bits (as the final move warrants an extension -- 12 + 16) are padded to 32 to make 4B
 
 ```
+
+---
+### Analysis
+
+Three forms analysis have been included. 
+
+heatmap.py -- provides heatmaps of events in chess matches
+shares.py -- provides a breakdown of moves into categories (eg. moves broken down by pieces moved)
+imbalances.py -- shows a breakdown of material imbalances throughout opening, middlegame, and endgame for different chess types of chess games
+
