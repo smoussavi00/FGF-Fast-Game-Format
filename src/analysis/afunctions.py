@@ -1,5 +1,4 @@
-import clean.py #type: ignore
-# import ../clean.py
+import ../clean.py
 
 def extract(fp,start):
 # GETS MOVE(S) FROM FAST-DATASET FILE
