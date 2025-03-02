@@ -63,5 +63,5 @@ Three forms analysis have been included.
 heatmap.py -- provides heatmaps of events in chess matches
 shares.py -- provides a breakdown of moves into categories (eg. moves broken down by pieces moved)
 imbalances.py -- shows a breakdown of material imbalances throughout opening, middlegame, and endgame for different chess types of chess games
----
+
 
