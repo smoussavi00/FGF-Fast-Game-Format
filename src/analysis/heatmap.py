@@ -7,7 +7,6 @@ def transit(file):
 
     d = {f'{f}{r}': (0, 1) for f in [chr(i) for i in range(97,105)] for r in range(1, 9)}
     skip = 6
-    i = 0
 
     with open(file, "rb") as f:
 
@@ -17,7 +16,6 @@ def transit(file):
 
             f.seek(fpos)
             if not f.read(1): break
-            i += 1
 
             while True:
 
