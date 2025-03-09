@@ -5,12 +5,15 @@ def procm(m,rs=None,only=False):
 
     n = 0
     ext = False
+    
+    mc = m
 
     if rs in [-1,0,1]:
     # FINAL MOVE -- EXTEND AND ENCODE RESULT 
         ext = True
         n += 2**27
-        n += (rs+3) * (2**2)    
+        n += (rs+2) * (2**2) 
+
     if m[-1] == '#':
     # MATE (set extend flag)
         if not ext:
@@ -20,15 +23,16 @@ def procm(m,rs=None,only=False):
         m = m[:-1]
     elif m[-1] == '+':
     # CHECK (set check flag, 11th position)
-        n += 2**9
+        n += 2**9 * ((2**16) ** ext)
         m = m[:-1]
     if m == 'O-O-O':
     # QUEENSIDE CASTLE (piece 000)
-        return n
+        return n * ((2**4) ** only)
     if m == 'O-O':
     # KINGSIDE CASTLE (piece 001)
         n += 2**6 * ((2**16) ** ext)
-        return n
+        return n * ((2**4) ** only)
+    prom = False
     if m[-2] == '=':
     # PROMOTION
         if not ext:
@@ -37,6 +41,7 @@ def procm(m,rs=None,only=False):
             n += 2**27
         n += (['N','B','R','Q'].index(m[-1]) + 1) * 2**10
         m = m[:-2]
+        prom = True
     
     # FIRST DETERMINE RANK
     # THEN DETERMINE FILE
@@ -47,8 +52,8 @@ def procm(m,rs=None,only=False):
     if not m:
     # PAWN
         n += 2**7 * ((2**16) ** ext)
-        return n
-
+        return n * ((2**4) ** only)
+    
     if m[-1] == 'x':
     # CAPTURE
         n += 2**10 * ((2**16) ** ext)
@@ -58,12 +63,12 @@ def procm(m,rs=None,only=False):
     # PIECE / KING
         n += (['N','B','R','Q','K'].index(m[0]) + 3) * (2**6) * ((2**16) ** ext)
         m = m[1:]
+
     else: 
     # PAWN
-        n += 2**7 * ((2**16) ** ext)
+        n += 2**7 * ((2**16) ** ext) 
     
-    if only: n *= 2**4
-    if not m: return n
+    if not m: return n * ((2**4) ** only)
     
     # DISAMBIGUATION (set extend flag)
     if not ext:
@@ -82,10 +87,10 @@ def procm(m,rs=None,only=False):
     # FILE DISAMBIGUATION
         n += (8 * (ord(m) - 97)) * (2**4)
         n += 2**13
-        
-    return n
+
+    return n * ((2**4) ** only)
     
-def clean_moves(fpo,moves):
+def clean_moves(fpo,moves, check=False):
 # FIRST REMOVES ALL EVAL NOTATION (ellipsis, exclamation/quotation marks etc.)
 # NEXT LOOP ITERATES THROUGH EACH TURN --- CONVERTS VIA procm ALL MOVES INTO BYTE REPRESENTATION
 
@@ -94,8 +99,12 @@ def clean_moves(fpo,moves):
     moves = re.sub(r' \{.*?\}', '', moves)
 
     parts = re.split(r'\b\w+\.', moves)[1:]
+
+    if check: print(parts)
+
     for i in range(len(parts)):
         a = parts[i].split()[0]
+
 
         if i < len(parts)-1:
             b = parts[i].split()[1]
@@ -124,19 +133,20 @@ def main():
     fs = False
     buf = {}
     i = 0
+
+    print(procm('gxh1=Q+',-1))
+
     with open(file) as fp:
         with open("gen", "wb") as fpo:
             for line in fp:
                 
                 if not line.strip() and fs:
-                    if buf['Termination'] in ['Normal','Time forfeit'] and 'Classical' in buf['Event'].split() and (buf["WhiteElo"].isnumeric() and buf["BlackElo"].isnumeric()):
-                        
+                    if buf['Termination'] in ['Normal','Time forfeit'] and len(buf['the-moves'])>3 and 'Classical' in buf['Event'].split() and (buf["WhiteElo"].isnumeric() and buf["BlackElo"].isnumeric()):
                         fpo.write(int(buf["WhiteElo"]).to_bytes(2,'big'))
                         fpo.write(int(buf["BlackElo"]).to_bytes(2,'big'))
                         fpo.write((int(buf["TimeControl"].split('+')[0])//60).to_bytes(1,'big'))
                         fpo.write(int(buf["TimeControl"].split('+')[1]).to_bytes(1,'big'))
                         clean_moves(fpo,buf['the-moves'])
-                        
                         i += 1
                         if i % 50000 == 0: print(i) 
                     fs = False
