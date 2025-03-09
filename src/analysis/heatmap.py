@@ -125,8 +125,8 @@ def victim(file):
                         d2['f8'] = 'R'
                         d2['g8'] = 'K'
 
-                    elif afunctions.promotiongt(w):
-                        d2[wsq] = afunctions.promotiongt(w)[1]
+                    elif afunctions.promotiongt(b):
+                        d2[wsq] = afunctions.promotiongt(b)[1]
 
                     else:
                         d2[bsq] = bp
