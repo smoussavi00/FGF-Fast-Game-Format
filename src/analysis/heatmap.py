@@ -7,6 +7,7 @@ def transit(file):
 
     d = {f'{f}{r}': (0, 1) for f in [chr(i) for i in range(97,105)] for r in range(1, 9)}
     skip = 6
+    i = 0
 
     with open(file, "rb") as f:
 
@@ -16,6 +17,7 @@ def transit(file):
 
             f.seek(fpos)
             if not f.read(1): break
+            i += 1
 
             while True:
 
@@ -31,7 +33,7 @@ def transit(file):
                     d['f1'] = ( ((d['f1'][1]-1)/d['f1'][1]) * d['f1'][0] + (1/d['f1'][1]) * afunctions.piecevaluegt('R') , d['f1'][1]+1 )
                     d['g1'] = ( ((d['g1'][1]-1)/d['g1'][1]) * d['g1'][0] + (1/d['g1'][1]) * afunctions.piecevaluegt('K',9) , d['g1'][1]+1 )
                 elif afunctions.promotiongt(w):
-                    d[wsq] = ( ((d[wsq][1]-1)/d[wsq][1]) * d[wsq][0] + (1/d[wsq][1]) *  afunctions.piecevaluegt(afunctions.promotiongt(w)[0]) , d[wsq][1]+1 )
+                    d[wsq] = ( ((d[wsq][1]-1)/d[wsq][1]) * d[wsq][0] + (1/d[wsq][1]) *  afunctions.piecevaluegt(afunctions.promotiongt(w)[1]) , d[wsq][1]+1 )
                 else:
                     d[wsq] = ( ((d[wsq][1]-1)/d[wsq][1]) * d[wsq][0] + (1/d[wsq][1]) * afunctions.piecevaluegt(wp) , d[wsq][1]+1 )
 
@@ -46,6 +48,8 @@ def transit(file):
                     elif bp == 'O-O':
                         d['f8'] = ( ((d['f8'][1]-1)/d['f8'][1]) * d['f8'][0] + (1/d['f8'][1]) * afunctions.piecevaluegt('R') , d['f8'][1]+1 )
                         d['g8'] = ( ((d['g8'][1]-1)/d['g8'][1]) * d['g8'][0] + (1/d['g8'][1]) * afunctions.piecevaluegt('K',9) , d['g8'][1]+1 )
+                    elif afunctions.promotiongt(b):
+                        d[bsq] = ( ((d[bsq][1]-1)/d[bsq][1]) * d[bsq][0] + (1/d[bsq][1]) *  afunctions.piecevaluegt(afunctions.promotiongt(b)[1]) , d[bsq][1]+1 )
                     else:
                         d[bsq] = ( ((d[bsq][1]-1)/d[bsq][1]) * d[bsq][0] + (1/d[bsq][1]) * afunctions.piecevaluegt(bp) , d[bsq][1]+1 )
 
@@ -75,7 +79,9 @@ def victim(file):
 
             f.seek(fpos)
             if not f.read(1): break
+
             enpassantsq = ''
+            d2 = afunctions.dinit()
 
             while True:
 

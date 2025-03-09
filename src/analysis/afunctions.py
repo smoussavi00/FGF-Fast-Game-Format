@@ -1,4 +1,5 @@
-import ../clean.py
+import clean #type: ignore
+# import ../clean.py
 
 def extract(fp,start):
 # GETS MOVE(S) FROM FAST-DATASET FILE
@@ -136,6 +137,24 @@ def piecevaluegt(pc,kingvalue=9):
 # PIECE VALUE GET -- RETURN PIECE VALUE IN PIECE
     return {'':1,'N':3,'B':3,'R':5,'Q':9,'K':kingvalue}[pc]
 
+def quadrantgt(m):
+# QUADRANT GET -- RETURN MOVE QUADRANT
+# Q : bottom-left ... top-right 
+
+# 0 : a1 ... d4 
+# 1 : e1 ... h4
+# 2 : a5 ... d8
+# 3 : e5 ... h8
+
+    sq = squaregt(m)
+    f = ord(sq[0])-97
+    r = int(sq[1])
+
+    q += f//4
+    q += 2 * ((r-1)//4)
+
+    return q
+
 def dinit():
     d = {f'{f}{r}': '-' for f in [chr(i) for i in range(97,105)] for r in range(1, 9)}
 
@@ -150,10 +169,18 @@ def dinit():
     return d
 
 def procop(op):
-    # PROCESS OPENING
+# PROCESS OPENING
 
     opr = []
     for m in op:
         opr.append(clean.procm(m))
     
     return opr
+
+def elogroup(elo):
+# GET ELO GROUP
+# GROUP 0 : 0000-1499
+# GROUP 1 : 1500-1999
+# GROUP 2 : 2000+
+
+    return min(max((elo-1000)//500,0),2)
