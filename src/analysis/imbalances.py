@@ -131,7 +131,7 @@ def byopening(file,openings):
                 if opmatch > -1:
                     for i in range(3): byop[opmatch][i] = ((byop[opmatch][i][1]-1)/(byop[opmatch][i][1])*byop[opmatch][i][0]+1/byop[opmatch][i][1]*imbalances[i],byop[opmatch][i][1]+1)
 
-    return [[val[0] for val in sublist] for sublist in byop]
+    return [[round(val[0],2) for val in sublist] for sublist in byop]
 
 def bycheckdifference(file):
 # CALCULATE AVERAGE MATERIAL IMBALANCE BY CHECK DIFFERENCE
@@ -246,7 +246,7 @@ def bycheckdifference(file):
                 
                 for i in range(3): bychd[chdmatch][i] = ((bychd[chdmatch][i][1]-1)/(bychd[chdmatch][i][1])*bychd[chdmatch][i][0]+1/bychd[chdmatch][i][1]*imbalances[i],bychd[chdmatch][i][1]+1)
    
-    return [[val[0] for val in sublist] for sublist in bychd]
+    return [[round(val[0],2) for val in sublist] for sublist in bychd]
 
 def bycheckmatequadrant(file,mode):
 # CALCULATE AVERAGE MATERIAL IMBALANCE BY CHECKMATE QUADRANTS (if there was a checkmate)
@@ -359,4 +359,4 @@ def bycheckmatequadrant(file,mode):
                 if cmq > -1:
                     for i in range(3): bycmq[cmq][i] = ((bycmq[cmq][i][1]-1)/(bycmq[cmq][i][1])*bycmq[cmq][i][0]+1/bycmq[cmq][i][1]*imbalances[i],bycmq[cmq][i][1]+1)
    
-    return [[val[0] for val in sublist] for sublist in bycmq]
+    return [[round(val[0],2) for val in sublist] for sublist in bycmq]
