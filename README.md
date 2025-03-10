@@ -2,11 +2,12 @@
 
 ### Dataset Compression
 - A reduction of [Lichess standard games dataset](https://database.lichess.org/#standard_games)
-- More compact datasets holding only necessary information (White ELO, Black ELO, Time Control, and Moves Played - in algebraic notation)
+- More compact datasets holding only necessary information (White ELO, Black ELO, Time Control, and Moves Played)
 - Classical events with Normal/Time Forfeit terminations considered only (no abandoned matches, bullet or blitz)
   - Rapid matches are included under classical
+  - Matches with no moves are not added (considered as abandoned)
   - You may find five minute matches
-- Evaluations are also removed from algebraic notation
+- Evaluations are also removed to conserve space
 - Examples:
   - Jan 2016 4.5 GB >> 150 MB --- 30x reduction --- (Contains 1.2M Games)
   - Nov 2015 3.5 GB >> 100 MB --- 35x reduction --- (Contains 840K Games)
