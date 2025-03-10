@@ -146,6 +146,7 @@ def quadrantgt(m):
 # 2 : a5 ... d8
 # 3 : e5 ... h8
 
+    q = 0
     sq = squaregt(m)
     f = ord(sq[0])-97
     r = int(sq[1])
