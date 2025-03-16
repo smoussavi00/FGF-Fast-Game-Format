@@ -1,7 +1,9 @@
-# lichess-fast
+# FGF - Fast Game Format
+
+[Report available here!](https://f1yaqnpm.notion.site/FGF-Fast-Game-Format-1b7b9b7edc458023824acc38e9568305?pvs=4)
 
 ### Dataset Compression
-- A reduction of [Lichess standard games dataset](https://database.lichess.org/#standard_games)
+- Algorithm to compressed the inefficient, space-costly PGN format
 - More compact datasets holding only necessary information (White ELO, Black ELO, Time Control, and Moves Played)
 - Classical events with Normal/Time Forfeit terminations considered only (no abandoned matches, bullet or blitz)
   - Rapid matches are included under classical
