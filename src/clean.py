@@ -90,7 +90,7 @@ def procm(m,rs=None,only=False):
 
     return n * ((2**4) ** only)
     
-def clean_moves(fpo,moves, check=False):
+def clean_moves(fpo,moves):
 # FIRST REMOVES ALL EVAL NOTATION (ellipsis, exclamation/quotation marks etc.)
 # NEXT LOOP ITERATES THROUGH EACH TURN --- CONVERTS VIA procm ALL MOVES INTO BYTE REPRESENTATION
 
@@ -100,11 +100,8 @@ def clean_moves(fpo,moves, check=False):
 
     parts = re.split(r'\b\w+\.', moves)[1:]
 
-    if check: print(parts)
-
     for i in range(len(parts)):
         a = parts[i].split()[0]
-
 
         if i < len(parts)-1:
             b = parts[i].split()[1]
@@ -134,8 +131,6 @@ def main():
     buf = {}
     i = 0
 
-    print(procm('gxh1=Q+',-1))
-
     with open(file) as fp:
         with open("gen", "wb") as fpo:
             for line in fp:
@@ -158,6 +153,7 @@ def main():
                         s = (line.strip()[1:-1]).split(" ",1)
                         buf[s[0]] = s[1][1:-1]
                     else: buf['the-moves'] = line.strip()
+            print(i)
                             
 if __name__ == "__main__":
     main()
@@ -169,12 +165,11 @@ if __name__ == "__main__":
 
 [1 Extend] [1 Capture] [1 Check] [111 Piece] [111111 Position]
 
-6 - Position
+6 - Square
 3 - Piece
 1 - Capture
 1 - Check
 1 - Extend
-
 
 EXTEND IN CASES OF:
     - Disambiguation
@@ -188,9 +183,8 @@ EXTEND IN CASES OF:
 2 - Disambiguation Type (none, file, rank, both)
 3 - Promotion Type (none, queen, rook, bishop or knight)
 6 - Position
+2 - Result 
 
 [1 Checkmate] [11 Disambiguation] [111 Promotion] [111111 Original Position -- for disambiguation] [11 Result] [11 NIL]
-
-# THIRTEEN AND FOURTEENTH BITS DETERMINE RESULT
 
 '''
